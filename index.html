@@ -5,65 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notorious | 伺服器硬舉中</title>
     <style>
-        /* 1. 全黑背景與佈局優化 */
+        /* 1. 全黑背景與 Grid 強制居中 (macOS 優化) */
+        :root {
+            --brand-red: #FF0000;
+            --mc-skin: #FFCD94; /* 膚色 */
+            --mc-tattoo: rgba(85, 85, 85, 0.6); /* 像素刺青顏色 */
+            --glass-bg: rgba(25, 25, 25, 0.65); /* 磨砂玻璃背景色 */
+        }
+
         html, body {
-            background-color: #000000 !important;
+            background-color: #000000 !important; /* 強制全黑背景 */
             margin: 0;
             padding: 0;
-            width: 100%;
+            width: 100vw;
             height: 100vh;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            /* 使用 macOS 標準字體系統，加大基礎字體 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 18px;
+            /* 使用 Grid 強制置中 */
+            display: grid;
+            place-items: center;
             overflow: hidden;
         }
 
-        /* 2. 主容器 */
+        /* 2. 主容器 (macOS 磨砂玻璃質感 + 紅邊框) */
         .container {
             position: relative;
-            z-index: 9999;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(15px); /* 磨砂玻璃核心 */
+            -webkit-backdrop-filter: blur(15px);
+            border: 4px solid var(--brand-red); /* 館長紅邊框 */
+            border-radius: 28px;
+            padding: 40px;
+            width: 90%;
+            max-width: 580px;
             text-align: center;
-            padding: 50px;
-            background-color: #111111; 
-            border: 4px solid #FF0000;
-            border-radius: 24px;
-            width: 85%;
-            max-width: 600px;
-            box-shadow: 0 0 70px rgba(255, 0, 0, 0.6);
+            box-shadow: 0 10px 70px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            z-index: 100;
         }
 
-        /* 3. 麥塊小人深蹲動畫 */
-        .animation-scene {
-            width: 240px;
-            height: 160px;
-            margin: 0 auto 30px auto;
-            position: relative;
-            animation: squat 1.2s ease-in-out infinite;
+        /* 3. 超大標題 UI */
+        h1 {
+            font-size: 3.5rem; /* 超大標題 */
+            color: var(--brand-red);
+            margin: 0 0 10px 0;
+            font-weight: 900;
+            letter-spacing: 5px;
+            text-transform: uppercase;
         }
 
-        .mc-part { position: absolute; background-color: #FFCD94; }
-        .head { width: 45px; height: 45px; top: 0; left: 97px; box-shadow: inset 0 10px #333, inset 0 -8px #333; }
-        .body { width: 45px; height: 60px; top: 45px; left: 97px; background-color: #000; border: 1px solid #444; }
-        .arm { width: 22px; height: 55px; top: 45px; }
-        .arm.l { left: 75px; } .arm.r { left: 142px; }
-        
-        .barbell-rod { width: 280px; height: 10px; background: #888; position: absolute; top: 35px; left: -20px; z-index: 10; }
-        .weight { width: 30px; height: 80px; background: #222; border: 2px solid #555; position: absolute; top: -35px; }
-        .weight.l { left: 0; } .weight.r { right: 0; }
-
-        @keyframes squat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(30px); }
-        }
-
-        /* 4. 大字體 UI */
-        h1 { font-size: 3.5rem; color: #FF0000; margin: 0; font-weight: 900; }
-        
-        /* 動態健身語錄區域 */
+        /* --- 4. 動態健身語錄區域 (對比特效區) --- */
         #gym-quote {
-            font-size: 1.8rem;
+            font-size: 1.9rem; /* 你的偏好：加大字體 */
             color: #ffffff;
             font-weight: bold;
             height: 60px; /* 固定高度防止跳動 */
@@ -71,33 +66,104 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.5); /* 基礎文字陰影 */
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
-        .sub-text { font-size: 1.2rem; color: #aaa; margin-bottom: 25px; }
+        /* 當力竭模式開啟時的文字對比特效 (JS 控制) */
+        #gym-quote.failure-text {
+            color: var(--brand-red); /* 文字變鮮紅 */
+            /* 紅色霓虹發光效果 */
+            text-shadow: 
+                0 0 10px var(--brand-red),
+                0 0 20px var(--brand-red),
+                0 0 30px #ffffff;
+            /* 輕微抖動動畫，模擬力竭 */
+            animation: text-shake 0.3s ease-in-out infinite;
+        }
 
-        /* 5. 進度條 */
-        .progress-box { width: 100%; height: 30px; background: #333; border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
+        @keyframes text-shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+            100% { transform: translateX(0); }
+        }
+
+        .sub-text { font-size: 1.1rem; color: #aaa; margin-bottom: 25px; }
+
+        /* --- 5. 麥塊小人深蹲動畫 (CSS 像素刺青手臂) --- */
+        .animation-scene {
+            width: 200px;
+            height: 140px;
+            margin: 0 auto 30px auto;
+            position: relative;
+            animation: squat 1.2s ease-in-out infinite;
+        }
+
+        /* 麥塊人部位 */
+        .mc-part { position: absolute; background-color: var(--mc-skin); }
+        .head { width: 40px; height: 40px; top: 0; left: 80px; box-shadow: inset 0 10px #333, inset 0 -8px #333; }
+        .body { width: 40px; height: 50px; top: 40px; left: 80px; background-color: #000; border: 1px solid #444; }
+        
+        /* 手臂：加入 CSS 像素刺青特效 */
+        .arm {
+            width: 20px;
+            height: 50px;
+            top: 40px;
+            /* --- CSS 像素刺青核心代碼 --- */
+            background-color: var(--mc-skin);
+            /* 使用重複線性漸層繪製像素點陣 */
+            background-image: 
+                repeating-linear-gradient(45deg, var(--mc-tattoo) 25%, transparent 25%, transparent 75%, var(--mc-tattoo) 75%, var(--mc-tattoo)),
+                repeating-linear-gradient(-45deg, var(--mc-tattoo) 25%, transparent 25%, transparent 75%, var(--mc-tattoo) 75%, var(--mc-tattoo));
+            background-size: 6px 6px; /* 像素點大小 */
+            background-position: 0 0, 0 3px;
+            /* ------------------------- */
+        }
+        .arm.l { left: 60px; } .arm.r { left: 120px; }
+        
+        /* 槓鈴 */
+        .barbell { width: 240px; height: 8px; background: #888; position: absolute; top: 30px; left: -20px; z-index: 10; }
+        .weight { width: 25px; height: 70px; background: #222; border: 2px solid #555; position: absolute; top: -31px; }
+        .weight.l { left: 0; } .weight.r { right: 0; }
+
+        @keyframes squat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(25px); }
+        }
+
+        /* 6. 進度條 */
+        .progress-box { width: 100%; height: 25px; background: #333; border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
         #bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #900, #f00); transition: width 1s linear; }
-        #timer { color: #ff0000; font-weight: bold; font-size: 1.6rem; }
-
+        
+        /* 按鈕樣式 (macOS 風格) */
         .btn {
-            background: none; color: white; border: 2px solid white; padding: 12px 35px; 
-            border-radius: 10px; font-size: 1.3rem; cursor: pointer; font-weight: bold;
+            background: none; color: white; border: 2px solid white; padding: 12px 30px; 
+            border-radius: 12px; font-size: 1.2rem; cursor: pointer; font-weight: bold; transition: 0.3s;
+            text-decoration: none; display: inline-block;
         }
-        .btn:hover { background: white; color: black; }
+        .btn:hover { background: white; color: black; transform: scale(1.05); }
+
+        /* 最後 5 秒容器閃爍效果 */
+        .container.failure-mode { animation: pulse 0.5s infinite; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 50px rgba(255,0,0,0.4); }
+            50% { box-shadow: 0 0 90px rgba(255,0,0,0.8); border-color: #ff5555; }
+            100% { box-shadow: 0 0 50px rgba(255,0,0,0.4); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="main-box">
         <h1>NOTORIOUS</h1>
         
-        <div id="gym-quote">伺服器熱身中...</div>
+        <div id="gym-quote">正在暖身中...</div>
         
         <div class="sub-text">流量過載，請給工程師一點組間休息時間</div>
 
         <div class="animation-scene">
-            <div class="barbell-rod">
+            <div class="barbell">
                 <div class="weight l"></div>
                 <div class="weight r"></div>
             </div>
@@ -111,18 +177,20 @@
             <div id="bar-fill"></div>
         </div>
 
-        <p style="font-size: 1.3rem;">預計 <span id="timer">30</span> 秒後自動重試</p>
+        <p style="font-size: 1.2rem;">預計 <span id="timer" style="color:#f00; font-weight:bold;">30</span> 秒後自動重新嘗試</p>
         <button class="btn" onclick="location.reload()">不廢話，手動重整</button>
     </div>
 
     <script>
+        // JavaScript 互動與語錄切換邏輯
         let sec = 30;
         const bar = document.getElementById('bar-fill');
         const txt = document.getElementById('timer');
         const quote = document.getElementById('gym-quote');
+        const box = document.getElementById('main-box');
 
         // 健身俏皮文字邏輯
-        function updateQuote(s) {
+        function getQuote(s) {
             if (s > 22) return "還有 4 組，撐住！";
             if (s > 15) return "還有 3 組，動作不要跑掉！";
             if (s > 8)  return "還有 2 組，這組做完換你！";
@@ -135,12 +203,23 @@
                 sec--;
                 txt.innerText = sec;
                 bar.style.width = ((30 - sec) / 30 * 100) + '%';
-                quote.innerText = updateQuote(sec); // 動態更新語錄
+                quote.innerText = getQuote(sec); // 動態更新語錄
+
+                // --- 新增：最後 5 秒開啟對比特效 ---
+                if (sec <= 5) {
+                    box.classList.add('failure-mode'); // 容器閃爍
+                    quote.classList.add('failure-text'); // 文字抖動發光
+                } else {
+                    box.classList.remove('failure-mode');
+                    quote.classList.remove('failure-text');
+                }
+                // ---------------------------------
+
             } else {
                 clearInterval(countdown);
-                location.reload();
+                location.reload(); // 自動重新整理
             }
-        }, 1000);
+        }, 1000); // 每秒執行一次
     </script>
 </body>
 </html>
