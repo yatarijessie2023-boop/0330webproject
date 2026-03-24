@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notorious | 伺服器硬舉中</title>
+    <style>
+        /* 1. 全黑背景與佈局優化 */
+        html, body {
+            background-color: #000000 !important;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 2. 主容器 */
+        .container {
+            position: relative;
+            z-index: 9999;
+            text-align: center;
+            padding: 50px;
+            background-color: #111111; 
+            border: 4px solid #FF0000;
+            border-radius: 24px;
+            width: 85%;
+            max-width: 600px;
+            box-shadow: 0 0 70px rgba(255, 0, 0, 0.6);
+        }
+
+        /* 3. 麥塊小人深蹲動畫 */
+        .animation-scene {
+            width: 240px;
+            height: 160px;
+            margin: 0 auto 30px auto;
+            position: relative;
+            animation: squat 1.2s ease-in-out infinite;
+        }
+
+        .mc-part { position: absolute; background-color: #FFCD94; }
+        .head { width: 45px; height: 45px; top: 0; left: 97px; box-shadow: inset 0 10px #333, inset 0 -8px #333; }
+        .body { width: 45px; height: 60px; top: 45px; left: 97px; background-color: #000; border: 1px solid #444; }
+        .arm { width: 22px; height: 55px; top: 45px; }
+        .arm.l { left: 75px; } .arm.r { left: 142px; }
+        
+        .barbell-rod { width: 280px; height: 10px; background: #888; position: absolute; top: 35px; left: -20px; z-index: 10; }
+        .weight { width: 30px; height: 80px; background: #222; border: 2px solid #555; position: absolute; top: -35px; }
+        .weight.l { left: 0; } .weight.r { right: 0; }
+
+        @keyframes squat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(30px); }
+        }
+
+        /* 4. 大字體 UI */
+        h1 { font-size: 3.5rem; color: #FF0000; margin: 0; font-weight: 900; }
+        
+        /* 動態健身語錄區域 */
+        #gym-quote {
+            font-size: 1.8rem;
+            color: #ffffff;
+            font-weight: bold;
+            height: 60px; /* 固定高度防止跳動 */
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sub-text { font-size: 1.2rem; color: #aaa; margin-bottom: 25px; }
+
+        /* 5. 進度條 */
+        .progress-box { width: 100%; height: 30px; background: #333; border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
+        #bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #900, #f00); transition: width 1s linear; }
+        #timer { color: #ff0000; font-weight: bold; font-size: 1.6rem; }
+
+        .btn {
+            background: none; color: white; border: 2px solid white; padding: 12px 35px; 
+            border-radius: 10px; font-size: 1.3rem; cursor: pointer; font-weight: bold;
+        }
+        .btn:hover { background: white; color: black; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>NOTORIOUS</h1>
+        
+        <div id="gym-quote">伺服器熱身中...</div>
+        
+        <div class="sub-text">流量過載，請給工程師一點組間休息時間</div>
+
+        <div class="animation-scene">
+            <div class="barbell-rod">
+                <div class="weight l"></div>
+                <div class="weight r"></div>
+            </div>
+            <div class="mc-part head"></div>
+            <div class="mc-part body"></div>
+            <div class="mc-part arm l"></div>
+            <div class="mc-part arm r"></div>
+        </div>
+
+        <div class="progress-box">
+            <div id="bar-fill"></div>
+        </div>
+
+        <p style="font-size: 1.3rem;">預計 <span id="timer">30</span> 秒後自動重試</p>
+        <button class="btn" onclick="location.reload()">不廢話，手動重整</button>
+    </div>
+
+    <script>
+        let sec = 30;
+        const bar = document.getElementById('bar-fill');
+        const txt = document.getElementById('timer');
+        const quote = document.getElementById('gym-quote');
+
+        // 健身俏皮文字邏輯
+        function updateQuote(s) {
+            if (s > 22) return "還有 4 組，撐住！";
+            if (s > 15) return "還有 3 組，動作不要跑掉！";
+            if (s > 8)  return "還有 2 組，這組做完換你！";
+            if (s > 3)  return "最後 1 組！力竭！力竭！";
+            return "補位完成，準備進場！";
+        }
+
+        const countdown = setInterval(() => {
+            if(sec > 0) {
+                sec--;
+                txt.innerText = sec;
+                bar.style.width = ((30 - sec) / 30 * 100) + '%';
+                quote.innerText = updateQuote(sec); // 動態更新語錄
+            } else {
+                clearInterval(countdown);
+                location.reload();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
