@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notorious | 伺服器硬舉中</title>
     <style>
-        /* 1. 核心定義與 macOS 優化 */
         * { box-sizing: border-box; }
         :root {
-            --current-color: #00FFCC; /* 動態顏色變數，預設青色 */
+            --current-color: #00FFCC; /* 初始青色 */
             --mc-skin: #FFCD94;
             --mc-tattoo: rgba(60, 60, 60, 0.7);
         }
@@ -19,106 +18,109 @@
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: grid; place-items: center; overflow: hidden;
+            transition: background-color 0.1s; /* 用於力竭時的背景閃爍 */
         }
 
-        /* 2. 主容器：背景與邊框顏色同步 */
+        /* 1. 主容器：動態顏色與磨砂質感 */
         .container {
             position: relative;
-            background: rgba(30, 30, 30, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 4px solid var(--current-color); /* 邊框顏色同步 */
-            border-radius: 30px; padding: 40px; width: 90%; max-width: 550px;
+            background: rgba(30, 30, 30, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 5px solid var(--current-color);
+            border-radius: 35px; padding: 50px; width: 90%; max-width: 580px;
             text-align: center; 
-            box-shadow: 0 0 40px var(--current-color); /* 陰影同步 */
+            box-shadow: 0 0 40px var(--current-color);
             z-index: 100; 
-            transition: all 0.5s ease; /* 平滑切換顏色 */
+            transition: border-color 0.5s, box-shadow 0.5s;
         }
 
-        h1 { font-size: 3.2rem; color: #FF0000; margin: 0; font-weight: 900; letter-spacing: 2px; }
+        /* 2. 標題與語錄：大字體 UI */
+        h1 { font-size: 3.5rem; color: #FF0000; margin: 0; font-weight: 900; letter-spacing: 4px; text-shadow: 2px 2px #000; }
         
-        /* 3. 活力變色文字區域 */
         #gym-quote { 
-            font-size: 2rem; font-weight: 900; 
-            margin: 20px 0 10px 0; min-height: 60px; 
-            color: var(--current-color); /* 文字顏色同步 */
+            font-size: 2.2rem; font-weight: 900; 
+            margin: 25px 0 15px 0; min-height: 70px; 
+            color: var(--current-color); 
             display: flex; align-items: center; justify-content: center;
-            text-shadow: 0 0 10px var(--current-color);
-            transition: all 0.3s ease;
+            text-shadow: 0 0 15px var(--current-color);
+            transition: color 0.4s;
         }
 
-        /* 最後 5 秒的劇烈閃爍與抖動 */
+        /* 3. 力竭模式特效 (最後 5 秒觸發) */
         .failure-active {
-            animation: textShake 0.1s infinite, neonFlicker 0.2s infinite;
-            transform: scale(1.1);
+            animation: 
+                extremeShake 0.15s infinite alternate, 
+                colorFlicker 0.1s infinite;
+            transform: scale(1.15);
         }
 
-        @keyframes textShake {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(3px); }
-            100% { transform: translateX(0); }
+        /* 螢幕抽搐抖動 */
+        @keyframes extremeShake {
+            0% { transform: translate(2px, 2px) rotate(0deg) scale(1.15); }
+            50% { transform: translate(-2px, -1px) rotate(-1deg) scale(1.15); }
+            100% { transform: translate(1px, 2px) rotate(1deg) scale(1.15); }
         }
 
-        @keyframes neonFlicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        /* 文字色彩高頻閃爍 */
+        @keyframes colorFlicker {
+            0%, 100% { color: #FF0000; text-shadow: 0 0 30px #FF0000; }
+            50% { color: #FFFFFF; text-shadow: 0 0 50px #FFFFFF; }
         }
 
-        .sub-text { font-size: 1.1rem; color: #aaa; margin-bottom: 20px; }
+        .sub-text { font-size: 1.2rem; color: #ccc; margin-bottom: 25px; font-weight: 500; }
 
-        /* 4. 麥塊小人與刺青手臂 */
+        /* 4. 麥塊小人：館長特製刺青版 */
         .animation-scene {
-            width: 200px; height: 150px; margin: 20px auto;
-            position: relative; animation: squat 1.2s ease-in-out infinite;
+            width: 220px; height: 160px; margin: 20px auto;
+            position: relative; animation: squat 1s ease-in-out infinite;
         }
         .mc-part { position: absolute; background-color: var(--mc-skin); }
-        .head { width: 42px; height: 42px; top: 0; left: 79px; box-shadow: inset 0 10px #333, inset 0 -8px #333; }
-        .body { width: 42px; height: 55px; top: 42px; left: 79px; background-color: #000; border: 1px solid #444; }
+        .head { width: 45px; height: 45px; top: 0; left: 87px; box-shadow: inset 0 10px #333, inset 0 -8px #333; }
+        .body { width: 45px; height: 60px; top: 45px; left: 87px; background-color: #000; border: 1px solid #444; }
         .arm { 
-            width: 20px; height: 50px; top: 42px; 
+            width: 22px; height: 55px; top: 45px; 
             background-image: 
                 repeating-linear-gradient(45deg, var(--mc-tattoo) 25%, transparent 25%, transparent 75%, var(--mc-tattoo) 75%, var(--mc-tattoo)),
                 repeating-linear-gradient(-45deg, var(--mc-tattoo) 25%, transparent 25%, transparent 75%, var(--mc-tattoo) 75%, var(--mc-tattoo));
-            background-size: 6px 6px;
+            background-size: 7px 7px;
         }
-        .arm.l { left: 59px; } .arm.r { left: 121px; }
-        .barbell { width: 260px; height: 10px; background: #888; position: absolute; top: 32px; left: -30px; z-index: 10; }
-        .weight { width: 30px; height: 80px; background: #222; border: 1px solid #555; position: absolute; top: -35px; }
+        .arm.l { left: 65px; } .arm.r { left: 132px; }
+        .barbell { width: 280px; height: 12px; background: #999; position: absolute; top: 35px; left: -30px; z-index: 10; border-radius: 5px; }
+        .weight { width: 35px; height: 90px; background: #1a1a1a; border: 2px solid #555; position: absolute; top: -40px; }
         .weight.l { left: 0; } .weight.r { right: 0; }
 
-        @keyframes squat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(30px); } }
+        @keyframes squat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(35px); } }
 
-        /* 5. 進度條：顏色同步 */
-        .progress-box { width: 100%; height: 25px; background: #333; border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
+        /* 5. 進度條：與文字顏色同步 */
+        .progress-box { width: 100%; height: 30px; background: #222; border-radius: 15px; overflow: hidden; margin-bottom: 25px; border: 1px solid #444; }
         #bar-fill { 
             width: 0%; height: 100%; 
-            background: var(--current-color); /* 進度條顏色同步 */
-            box-shadow: 0 0 15px var(--current-color);
+            background: var(--current-color);
+            box-shadow: 0 0 20px var(--current-color);
             transition: width 1s linear, background 0.5s ease; 
         }
 
         .btn { 
-            background: none; color: white; border: 2px solid white; padding: 12px 35px; 
-            border-radius: 12px; font-size: 1.2rem; cursor: pointer; font-weight: bold; transition: 0.3s; 
+            background: none; color: white; border: 2px solid white; padding: 15px 40px; 
+            border-radius: 15px; font-size: 1.4rem; cursor: pointer; font-weight: bold; transition: 0.3s; 
         }
-        .btn:hover { background: white; color: black; }
+        .btn:hover { background: #FF0000; border-color: #FF0000; box-shadow: 0 0 20px #FF0000; }
 
-        /* 最後階段容器脈衝 */
-        .container.pulse-active {
-            animation: containerPulse 0.5s infinite;
-        }
-        @keyframes containerPulse {
-            0% { box-shadow: 0 0 30px var(--current-color); }
-            50% { box-shadow: 0 0 70px var(--current-color); }
-            100% { box-shadow: 0 0 30px var(--current-color); }
+        /* 力竭時的背景震動感 */
+        .bg-vibrate { animation: bgShake 0.1s infinite; }
+        @keyframes bgShake {
+            0% { background-color: #000; }
+            50% { background-color: #1a0000; }
         }
     </style>
 </head>
-<body>
+<body id="bg-body">
     <div class="container" id="main-box">
         <h1>NOTORIOUS</h1>
-        <div id="gym-quote">正在暖身中...</div>
-        <div class="sub-text">伺服器正在練腿，組間休息中</div>
+        <div id="gym-quote">準備開練...</div>
+        <div class="sub-text">伺服器組間休息，請稍候</div>
+        
         <div class="animation-scene">
             <div class="barbell"><div class="weight l"></div><div class="weight r"></div></div>
             <div class="mc-part head"></div>
@@ -126,9 +128,12 @@
             <div class="mc-part arm l"></div>
             <div class="mc-part arm r"></div>
         </div>
+
         <div class="progress-box"><div id="bar-fill"></div></div>
-        <p style="font-size: 1.2rem; margin-bottom: 25px;">預計 <span id="timer" style="color:#FF0000; font-weight:bold;">30</span> 秒後自動重整</p>
-        <button class="btn" onclick="location.reload()">不廢話，手動重整</button>
+        <p style="font-size: 1.4rem; margin-bottom: 30px;">
+            <span id="timer" style="color:#FF0000; font-weight:bold; font-size: 2rem;">30</span> 秒後自動重整
+        </p>
+        <button class="btn" onclick="location.reload()">手動重整</button>
     </div>
 
     <script>
@@ -137,25 +142,25 @@
         const txt = document.getElementById('timer');
         const quote = document.getElementById('gym-quote');
         const box = document.getElementById('main-box');
+        const body = document.getElementById('bg-body');
 
-        // 定義階段數據：文字與顏色
         function updateStage(s) {
             let info = { text: "", color: "" };
             if (s > 22) {
                 info.text = "還有 4 組，撐住！";
-                info.color = "#00FFCC"; // 活力青（開始）
+                info.color = "#00FFCC"; // 活力青
             } else if (s > 15) {
                 info.text = "還有 3 組，動作不要跑掉！";
-                info.color = "#CCFF00"; // 螢光黃（進行中）
+                info.color = "#CCFF00"; // 螢光黃
             } else if (s > 8) {
                 info.text = "還有 2 組，這組做完換你！";
-                info.color = "#FFCC00"; // 橙黃色（疲勞）
+                info.color = "#FFBB00"; // 暖橘
             } else if (s > 3) {
                 info.text = "最後 1 組！力竭！力竭！";
-                info.color = "#FF4400"; // 橘紅色（極限）
+                info.color = "#FF4400"; // 極限橘紅
             } else {
                 info.text = "補位完成，準備進場！";
-                info.color = "#FF0000"; // 爆發紅（重整）
+                info.color = "#FF0000"; // 爆發紅
             }
             return info;
         }
@@ -166,19 +171,16 @@
                 txt.innerText = sec;
                 bar.style.width = ((30 - sec) / 30 * 100) + '%';
                 
-                // 取得目前階段的文字與顏色
                 const stage = updateStage(sec);
-                
-                // 更新文字內容
                 quote.innerText = stage.text;
                 
-                // --- 核心修改：利用 CSS 變數一次同步所有顏色 ---
+                // 同步更新 CSS 變數顏色
                 document.documentElement.style.setProperty('--current-color', stage.color);
                 
-                // 最後 5 秒進入「力竭模式」：保留緊張感特效
+                // 最後 5 秒啟動極限力竭特效
                 if (sec <= 5) {
-                    box.classList.add('pulse-active');
-                    quote.classList.add('failure-active');
+                    box.classList.add('failure-active');
+                    body.classList.add('bg-vibrate');
                 }
             } else {
                 clearInterval(countdown);
