@@ -7,7 +7,7 @@
     <style>
         * { box-sizing: border-box; }
         :root {
-            --current-color: #00FFCC; /* 初始青色 */
+            --current-color: #00FFCC; 
             --mc-skin: #FFCD94;
             --mc-tattoo: rgba(60, 60, 60, 0.7);
         }
@@ -18,10 +18,9 @@
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: grid; place-items: center; overflow: hidden;
-            transition: background-color 0.1s; /* 用於力竭時的背景閃爍 */
+            transition: background-color 0.1s;
         }
 
-        /* 1. 主容器：動態顏色與磨砂質感 */
         .container {
             position: relative;
             background: rgba(30, 30, 30, 0.7);
@@ -35,34 +34,28 @@
             transition: border-color 0.5s, box-shadow 0.5s;
         }
 
-        /* 2. 標題與語錄：大字體 UI */
         h1 { font-size: 3.5rem; color: #FF0000; margin: 0; font-weight: 900; letter-spacing: 4px; text-shadow: 2px 2px #000; }
         
         #gym-quote { 
             font-size: 2.2rem; font-weight: 900; 
-            margin: 25px 0 15px 0; min-height: 70px; 
+            margin: 25px 0 15px 0; min-height: 100px; 
             color: var(--current-color); 
             display: flex; align-items: center; justify-content: center;
             text-shadow: 0 0 15px var(--current-color);
             transition: color 0.4s;
         }
 
-        /* 3. 力竭模式特效 (最後 5 秒觸發) */
         .failure-active {
-            animation: 
-                extremeShake 0.15s infinite alternate, 
-                colorFlicker 0.1s infinite;
-            transform: scale(1.15);
+            animation: extremeShake 0.15s infinite alternate, colorFlicker 0.1s infinite;
+            transform: scale(1.1);
         }
 
-        /* 螢幕抽搐抖動 */
         @keyframes extremeShake {
-            0% { transform: translate(2px, 2px) rotate(0deg) scale(1.15); }
-            50% { transform: translate(-2px, -1px) rotate(-1deg) scale(1.15); }
-            100% { transform: translate(1px, 2px) rotate(1deg) scale(1.15); }
+            0% { transform: translate(2px, 2px) rotate(0deg); }
+            50% { transform: translate(-2px, -1px) rotate(-1deg); }
+            100% { transform: translate(1px, 2px) rotate(1deg); }
         }
 
-        /* 文字色彩高頻閃爍 */
         @keyframes colorFlicker {
             0%, 100% { color: #FF0000; text-shadow: 0 0 30px #FF0000; }
             50% { color: #FFFFFF; text-shadow: 0 0 50px #FFFFFF; }
@@ -70,10 +63,10 @@
 
         .sub-text { font-size: 1.2rem; color: #ccc; margin-bottom: 25px; font-weight: 500; }
 
-        /* 4. 麥塊小人：館長特製刺青版 */
         .animation-scene {
             width: 220px; height: 160px; margin: 20px auto;
-            position: relative; animation: squat 1s ease-in-out infinite;
+            position: relative; 
+            animation: squat 1s ease-in-out infinite; /* JS 會動態修改 1s */
         }
         .mc-part { position: absolute; background-color: var(--mc-skin); }
         .head { width: 45px; height: 45px; top: 0; left: 87px; box-shadow: inset 0 10px #333, inset 0 -8px #333; }
@@ -92,7 +85,6 @@
 
         @keyframes squat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(35px); } }
 
-        /* 5. 進度條：與文字顏色同步 */
         .progress-box { width: 100%; height: 30px; background: #222; border-radius: 15px; overflow: hidden; margin-bottom: 25px; border: 1px solid #444; }
         #bar-fill { 
             width: 0%; height: 100%; 
@@ -107,7 +99,6 @@
         }
         .btn:hover { background: #FF0000; border-color: #FF0000; box-shadow: 0 0 20px #FF0000; }
 
-        /* 力竭時的背景震動感 */
         .bg-vibrate { animation: bgShake 0.1s infinite; }
         @keyframes bgShake {
             0% { background-color: #000; }
@@ -143,24 +134,44 @@
         const quote = document.getElementById('gym-quote');
         const box = document.getElementById('main-box');
         const body = document.getElementById('bg-body');
+        const scene = document.querySelector('.animation-scene');
+
+        // 語錄庫庫
+        const quotes = {
+            stage4: ["還有 4 組，撐住！", "這是我 0.1 倍的力量！", "你各位啊，不要偷懶！"],
+            stage3: ["還有 3 組，動作不要跑掉！", "核心收緊，不要憋氣！", "看什麼看？再一組！"],
+            stage2: ["還有 2 組，這組做完換你！", "漢子，這才是訓練！", "汗水是脂肪的眼淚！"],
+            stage1: ["最後 1 組！力竭！力竭！", "超越極限，不要放手！", "全台灣都在看你練！"],
+            done: ["補位完成，準備進場！", "練完了，硬起來！", "現在，換你上場！"]
+        };
+
+        function getRandomQuote(category) {
+            const list = quotes[category];
+            return list[Math.floor(Math.random() * list.length)];
+        }
 
         function updateStage(s) {
-            let info = { text: "", color: "" };
+            let info = { text: "", color: "", speed: "1s" };
             if (s > 22) {
-                info.text = "還有 4 組，撐住！";
-                info.color = "#00FFCC"; // 活力青
+                info.text = getRandomQuote('stage4');
+                info.color = "#00FFCC";
+                info.speed = "1.2s";
             } else if (s > 15) {
-                info.text = "還有 3 組，動作不要跑掉！";
-                info.color = "#CCFF00"; // 螢光黃
+                info.text = getRandomQuote('stage3');
+                info.color = "#CCFF00";
+                info.speed = "0.9s";
             } else if (s > 8) {
-                info.text = "還有 2 組，這組做完換你！";
-                info.color = "#FFBB00"; // 暖橘
+                info.text = getRandomQuote('stage2');
+                info.color = "#FFBB00";
+                info.speed = "0.6s";
             } else if (s > 3) {
-                info.text = "最後 1 組！力竭！力竭！";
-                info.color = "#FF4400"; // 極限橘紅
+                info.text = getRandomQuote('stage1');
+                info.color = "#FF4400";
+                info.speed = "0.4s";
             } else {
-                info.text = "補位完成，準備進場！";
-                info.color = "#FF0000"; // 爆發紅
+                info.text = getRandomQuote('done');
+                info.color = "#FF0000";
+                info.speed = "0.2s";
             }
             return info;
         }
@@ -172,12 +183,15 @@
                 bar.style.width = ((30 - sec) / 30 * 100) + '%';
                 
                 const stage = updateStage(sec);
-                quote.innerText = stage.text;
                 
-                // 同步更新 CSS 變數顏色
+                // 只有在切換階段或固定頻率更換文字
+                if (sec === 29 || sec === 22 || sec === 15 || sec === 8 || sec === 3) {
+                    quote.innerText = stage.text;
+                }
+                
                 document.documentElement.style.setProperty('--current-color', stage.color);
+                scene.style.animationDuration = stage.speed;
                 
-                // 最後 5 秒啟動極限力竭特效
                 if (sec <= 5) {
                     box.classList.add('failure-active');
                     body.classList.add('bg-vibrate');
