@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notorious | 伺服器硬舉中</title>
     <style>
+        /* 1. 核心定義與 macOS 優化 */
         * { box-sizing: border-box; }
         :root {
-            --brand-red: #FF0000;
-            --vital-yellow: #FFD700; /* 活力黃 */
+            --current-color: #00FFCC; /* 動態顏色變數，預設青色 */
             --mc-skin: #FFCD94;
             --mc-tattoo: rgba(60, 60, 60, 0.7);
         }
@@ -21,46 +21,52 @@
             display: grid; place-items: center; overflow: hidden;
         }
 
+        /* 2. 主容器：背景與邊框顏色同步 */
         .container {
             position: relative;
             background: rgba(30, 30, 30, 0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 4px solid var(--brand-red);
+            border: 4px solid var(--current-color); /* 邊框顏色同步 */
             border-radius: 30px; padding: 40px; width: 90%; max-width: 550px;
-            text-align: center; box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
-            z-index: 100; transition: all 0.3s ease;
+            text-align: center; 
+            box-shadow: 0 0 40px var(--current-color); /* 陰影同步 */
+            z-index: 100; 
+            transition: all 0.5s ease; /* 平滑切換顏色 */
         }
 
-        h1 { font-size: 3.2rem; color: var(--brand-red); margin: 0; font-weight: 900; letter-spacing: 2px; }
+        h1 { font-size: 3.2rem; color: #FF0000; margin: 0; font-weight: 900; letter-spacing: 2px; }
         
-        /* 活力黃文字區域 */
+        /* 3. 活力變色文字區域 */
         #gym-quote { 
-            font-size: 1.9rem; font-weight: 900; 
-            margin: 20px 0 10px 0; min-height: 50px; 
-            color: var(--vital-yellow); 
+            font-size: 2rem; font-weight: 900; 
+            margin: 20px 0 10px 0; min-height: 60px; 
+            color: var(--current-color); /* 文字顏色同步 */
             display: flex; align-items: center; justify-content: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(255, 215, 0, 0.3);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 0 10px var(--current-color);
+            transition: all 0.3s ease;
         }
 
-        .failure-text {
-            color: #FFF000 !important;
-            text-shadow: 0 0 20px #FFD700, 0 0 40px #FF4500 !important;
+        /* 最後 5 秒的劇烈閃爍與抖動 */
+        .failure-active {
+            animation: textShake 0.1s infinite, neonFlicker 0.2s infinite;
             transform: scale(1.1);
-            animation: textShake 0.1s infinite;
         }
 
         @keyframes textShake {
             0% { transform: translateX(0); }
-            25% { transform: translateX(-2px); }
-            75% { transform: translateX(2px); }
+            50% { transform: translateX(3px); }
             100% { transform: translateX(0); }
+        }
+
+        @keyframes neonFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .sub-text { font-size: 1.1rem; color: #aaa; margin-bottom: 20px; }
 
-        /* 麥塊小人與刺青手臂 */
+        /* 4. 麥塊小人與刺青手臂 */
         .animation-scene {
             width: 200px; height: 150px; margin: 20px auto;
             position: relative; animation: squat 1.2s ease-in-out infinite;
@@ -82,19 +88,37 @@
 
         @keyframes squat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(30px); } }
 
+        /* 5. 進度條：顏色同步 */
         .progress-box { width: 100%; height: 25px; background: #333; border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
-        #bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #900, #f00); transition: width 1s linear; }
-        .btn { background: none; color: white; border: 2px solid white; padding: 12px 35px; border-radius: 12px; font-size: 1.2rem; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        #bar-fill { 
+            width: 0%; height: 100%; 
+            background: var(--current-color); /* 進度條顏色同步 */
+            box-shadow: 0 0 15px var(--current-color);
+            transition: width 1s linear, background 0.5s ease; 
+        }
+
+        .btn { 
+            background: none; color: white; border: 2px solid white; padding: 12px 35px; 
+            border-radius: 12px; font-size: 1.2rem; cursor: pointer; font-weight: bold; transition: 0.3s; 
+        }
         .btn:hover { background: white; color: black; }
-        .failure-mode { animation: pulse 0.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 30px rgba(255,0,0,0.3); } 50% { box-shadow: 0 0 80px rgba(255,0,0,0.7); border-color: #ff5555; } 100% { box-shadow: 0 0 30px rgba(255,0,0,0.3); } }
+
+        /* 最後階段容器脈衝 */
+        .container.pulse-active {
+            animation: containerPulse 0.5s infinite;
+        }
+        @keyframes containerPulse {
+            0% { box-shadow: 0 0 30px var(--current-color); }
+            50% { box-shadow: 0 0 70px var(--current-color); }
+            100% { box-shadow: 0 0 30px var(--current-color); }
+        }
     </style>
 </head>
 <body>
     <div class="container" id="main-box">
         <h1>NOTORIOUS</h1>
         <div id="gym-quote">正在暖身中...</div>
-        <div class="sub-text">伺服器正在練腿，請稍候</div>
+        <div class="sub-text">伺服器正在練腿，組間休息中</div>
         <div class="animation-scene">
             <div class="barbell"><div class="weight l"></div><div class="weight r"></div></div>
             <div class="mc-part head"></div>
@@ -103,33 +127,63 @@
             <div class="mc-part arm r"></div>
         </div>
         <div class="progress-box"><div id="bar-fill"></div></div>
-        <p style="font-size: 1.2rem; margin-bottom: 25px;">預計 <span id="timer" style="color:#f00; font-weight:bold;">30</span> 秒後自動重整</p>
-        <button class="btn" onclick="location.reload()">手動重整</button>
+        <p style="font-size: 1.2rem; margin-bottom: 25px;">預計 <span id="timer" style="color:#FF0000; font-weight:bold;">30</span> 秒後自動重整</p>
+        <button class="btn" onclick="location.reload()">不廢話，手動重整</button>
     </div>
+
     <script>
         let sec = 30;
         const bar = document.getElementById('bar-fill');
         const txt = document.getElementById('timer');
         const quote = document.getElementById('gym-quote');
         const box = document.getElementById('main-box');
-        function getQuote(s) {
-            if (s > 22) return "還有 4 組，撐住！";
-            if (s > 15) return "還有 3 組，動作不要跑掉！";
-            if (s > 8)  return "還有 2 組，這組做完換你！";
-            if (s > 3)  return "最後 1 組！力竭！力竭！";
-            return "補位完成，準備進場！";
+
+        // 定義階段數據：文字與顏色
+        function updateStage(s) {
+            let info = { text: "", color: "" };
+            if (s > 22) {
+                info.text = "還有 4 組，撐住！";
+                info.color = "#00FFCC"; // 活力青（開始）
+            } else if (s > 15) {
+                info.text = "還有 3 組，動作不要跑掉！";
+                info.color = "#CCFF00"; // 螢光黃（進行中）
+            } else if (s > 8) {
+                info.text = "還有 2 組，這組做完換你！";
+                info.color = "#FFCC00"; // 橙黃色（疲勞）
+            } else if (s > 3) {
+                info.text = "最後 1 組！力竭！力竭！";
+                info.color = "#FF4400"; // 橘紅色（極限）
+            } else {
+                info.text = "補位完成，準備進場！";
+                info.color = "#FF0000"; // 爆發紅（重整）
+            }
+            return info;
         }
-        setInterval(() => {
+
+        const countdown = setInterval(() => {
             if(sec > 0) {
                 sec--;
                 txt.innerText = sec;
                 bar.style.width = ((30 - sec) / 30 * 100) + '%';
-                quote.innerText = getQuote(sec);
+                
+                // 取得目前階段的文字與顏色
+                const stage = updateStage(sec);
+                
+                // 更新文字內容
+                quote.innerText = stage.text;
+                
+                // --- 核心修改：利用 CSS 變數一次同步所有顏色 ---
+                document.documentElement.style.setProperty('--current-color', stage.color);
+                
+                // 最後 5 秒進入「力竭模式」：保留緊張感特效
                 if (sec <= 5) {
-                    box.classList.add('failure-mode');
-                    quote.classList.add('failure-text');
+                    box.classList.add('pulse-active');
+                    quote.classList.add('failure-active');
                 }
-            } else { location.reload(); }
+            } else {
+                clearInterval(countdown);
+                location.reload();
+            }
         }, 1000);
     </script>
 </body>
