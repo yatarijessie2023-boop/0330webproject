@@ -7,12 +7,12 @@
     <style>
         * { box-sizing: border-box; }
         :root {
-            --current-color: #00FFCC; /* 初始動態顏色 */
-            --mc-skin: #FFCD94;       /* 皮膚色 */
-            --mc-skin-blush: #FFACAC; /* 腮紅色 */
-            --mc-eye-pupil: #222;     /* 瞳孔色 */
-            --mc-eye-white: #fff;     /* 眼白色 */
-            --mc-tattoo: rgba(60, 60, 60, 0.6); /* 刺青色 */
+            --current-color: #00FFCC;
+            --mc-skin: #FFCD94;
+            --mc-skin-blush: #FFACAC;
+            --mc-eye-pupil: #222;
+            --mc-eye-white: #fff;
+            --mc-tattoo: rgba(60, 60, 60, 0.6);
         }
         
         html, body {
@@ -22,19 +22,30 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: grid; place-items: center; overflow: hidden;
             transition: background-color 0.1s;
+            cursor: crosshair;
+            touch-action: manipulation;
+            user-select: none;
         }
 
-        /* 1. 主容器：霓虹霓虹 */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0,255,204,0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .container {
             position: relative;
-            background: rgba(30, 30, 30, 0.7);
+            background: rgba(15, 15, 15, 0.85);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 5px solid var(--current-color);
-            border-radius: 35px; padding: 50px; width: 90%; max-width: 580px;
+            border-radius: 35px; padding: 50px; width: 95%; max-width: 600px;
             text-align: center; 
             z-index: 100; 
-            transition: border-color 0.5s;
+            transition: all 0.2s ease;
             animation: borderBreath 2s infinite alternate ease-in-out;
         }
 
@@ -60,7 +71,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 3. 【Q 版比例】麥塊小人 CSS 優化區域 */
+        /* 麥塊小人場景 */
         .animation-scene {
             width: 220px; height: 180px;
             margin: 10px auto;
@@ -74,149 +85,89 @@
             50% { transform: translateY(30px) scaleY(0.96); } 
         }
 
+        .rage-mode .head::before, .rage-mode .head::after {
+            background-color: #FF0000 !important;
+            box-shadow: 0 0 15px #FF0000;
+        }
+
         .mc-part { position: absolute; background-color: var(--mc-skin); }
-
-        /* 3a. 大頭與真正的五官 */
-        .head { 
-            width: 65px; height: 60px;
-            top: 0; left: 77.5px;
-            box-shadow: inset 0 12px #333, inset 0 -5px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            z-index: 5;
-        }
-
-        /* 瞳孔（::before = 左，::after = 右）*/
+        .head { width: 65px; height: 60px; top: 0; left: 77.5px; box-shadow: inset 0 12px #333; border-radius: 8px; z-index: 5; }
         .head::before, .head::after {
-            content: ''; position: absolute;
-            width: 12px; height: 12px;
-            background-color: var(--mc-eye-white);
-            top: 25px; /* 眼睛高度 */
-            border-radius: 3px;
-            background-image: radial-gradient(var(--mc-eye-pupil) 30%, transparent 40%);
+            content: ''; position: absolute; width: 12px; height: 12px; background-color: var(--mc-eye-white);
+            top: 25px; border-radius: 3px; background-image: radial-gradient(var(--mc-eye-pupil) 30%, transparent 40%);
         }
-        .head::before { left: 10px; }
-        .head::after { right: 10px; }
-
-        /* 嘴巴與調整後的腮紅 */
-        .head-features {
-            position: absolute;
-            width: 100%; height: 100%; top: 0; left: 0;
-            z-index: 6;
-        }
-
-        /* 嘴巴：可愛微笑 */
-        .mouth {
-            position: absolute;
-            width: 18px; height: 6px;
-            background: #222;
-            bottom: 12px; left: 50%;
-            transform: translateX(-50%);
-            border-radius: 3px;
-        }
-
-        /* 調整後的腮紅：淡淡粉紅 */
-        .blush {
-            position: absolute;
-            width: 12px; height: 8px;
-            background-color: var(--mc-skin-blush);
-            bottom: 18px; /* 嘴巴上方 */
-            border-radius: 4px;
-        }
-        .blush.l { left: 8px; }
-        .blush.r { right: 8px; }
-
-        /* 3b. 縮小身體比例 */
-        .body { 
-            width: 40px; height: 50px;
-            top: 60px; left: 90px;
-            background-color: #111; 
-            border: 2px solid #333; 
-            border-radius: 4px;
-            z-index: 4;
-        }
-
+        .head::before { left: 10px; } .head::after { right: 10px; }
+        .mouth { position: absolute; width: 18px; height: 6px; background: #222; bottom: 12px; left: 50%; transform: translateX(-50%); border-radius: 3px; }
+        .blush { position: absolute; width: 12px; height: 8px; background-color: var(--mc-skin-blush); bottom: 18px; border-radius: 4px; }
+        .blush.l { left: 8px; } .blush.r { right: 8px; }
+        .body { width: 40px; height: 50px; top: 60px; left: 90px; background-color: #111; border: 2px solid #333; z-index: 4; }
         .arm { 
-            width: 18px; height: 45px;
-            top: 60px; 
-            border-radius: 4px;
+            width: 18px; height: 45px; top: 60px; z-index: 3;
             background-image: 
-                repeating-linear-gradient(45deg, var(--mc-tattoo) 25%, transparent 25%, transparent 75%, var(--mc-tattoo) 75%, var(--mc-tattoo)),
-                repeating-linear-gradient(-45deg, var(--mc-tattoo) 25%, transparent 25%, transparent 75%, var(--mc-tattoo) 75%, var(--mc-tattoo));
-            background-size: 6px 6px;
-            z-index: 3;
+                repeating-linear-gradient(45deg, var(--mc-tattoo) 0px, var(--mc-tattoo) 1px, transparent 1px, transparent 3px),
+                repeating-linear-gradient(-45deg, var(--mc-tattoo) 0px, var(--mc-tattoo) 1px, transparent 1px, transparent 3px),
+                linear-gradient(var(--mc-skin), var(--mc-skin));
+            background-size: 6px 6px, 6px 6px, 100% 100%;
+            border-radius: 4px;
         }
-        .arm.l { left: 70px; } 
-        .arm.r { left: 132px; }
+        .arm.l { left: 70px; } .arm.r { left: 132px; }
 
         .barbell { 
-            width: 280px; height: 10px;
-            background: #888; 
-            position: absolute; top: 50px;
-            left: -30px; z-index: 10; border-radius: 5px; 
+            width: 280px; height: 10px; background: #888; position: absolute; top: 50px; left: -30px; z-index: 10;
+            animation: barbellBend 1.2s ease-in-out infinite; animation-duration: inherit;
         }
-        .weight { 
-            width: 35px; height: 100px;
-            background: #1a1a1a; 
-            border: 2px solid #444; 
-            position: absolute; top: -45px;
-            border-radius: 4px;
-        }
+        @keyframes barbellBend { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.5) translateY(2px); } }
+        .weight { width: 35px; height: 100px; background: #1a1a1a; border: 2px solid #444; position: absolute; top: -45px; }
         .weight.l { left: 0; } .weight.r { right: 0; }
+        .heavy .weight::after { content: ""; position: absolute; width: 100%; height: 100%; top: 0; left: 110%; background: #111; border: 2px solid #444; }
+        .heavy .weight.r::after { left: -110%; }
 
-        /* 4. 進度條與特效 */
+        /* 炫酷漂浮文字 - 修正：調低層級並設置散開動畫 */
+        .float-text { 
+            position: absolute; 
+            font-weight: 900; 
+            pointer-events: none; 
+            z-index: 2; /* 在人物下方 */
+            font-size: 3.5rem; 
+            font-style: italic;
+            text-shadow: 0 0 10px currentColor, 3px 3px 0px #000;
+            white-space: nowrap;
+            left: 50%;
+            top: 70%; /* 從軀幹下方開始 */
+            animation: popOutSide 0.8s cubic-bezier(0.17, 0.89, 0.32, 1.2) forwards;
+        }
+
+        @keyframes popOutSide {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+            100% { opacity: 0; transform: translate(var(--side-x), -180px) scale(1) rotate(var(--end-rot)); }
+        }
+
         .progress-box { width: 100%; height: 30px; background: #222; border-radius: 15px; overflow: hidden; margin-bottom: 25px; border: 1px solid #444; }
-        #bar-fill { 
-            width: 0%; height: 100%; 
-            background: var(--current-color);
-            box-shadow: 0 0 20px var(--current-color);
-            transition: width 1s linear, background 0.5s ease; 
-        }
-
-        .btn { 
-            background: none; color: white; border: 2px solid white; padding: 15px 40px; 
-            border-radius: 15px; font-size: 1.4rem; cursor: pointer; font-weight: bold; transition: 0.3s; 
-        }
+        #bar-fill { width: 0%; height: 100%; background: var(--current-color); box-shadow: 0 0 20px var(--current-color); transition: width 1s linear; }
+        .btn { background: none; color: white; border: 2px solid white; padding: 15px 40px; border-radius: 15px; font-size: 1.4rem; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn:hover { background: #FF0000; border-color: #FF0000; box-shadow: 0 0 20px #FF0000; }
 
-        .failure-active {
-            animation: extremeShake 0.15s infinite alternate, colorFlicker 0.1s infinite;
-            transform: scale(1.1);
-        }
-        @keyframes extremeShake {
-            0% { transform: translate(2px, 2px) rotate(0deg); }
-            50% { transform: translate(-2px, -1px) rotate(-1deg); }
-            100% { transform: translate(1px, 2px) rotate(1deg); }
-        }
-        @keyframes colorFlicker {
-            0%, 100% { color: #FF0000; text-shadow: 0 0 30px #FF0000; }
-            50% { color: #FFFFFF; text-shadow: 0 0 50px #FFFFFF; }
-        }
-        .bg-vibrate { animation: bgShake 0.1s infinite; }
-        @keyframes bgShake {
-            0% { background-color: #000; }
-            50% { background-color: #1a0000; }
-        }
-        .sub-text { font-size: 1.2rem; color: #ccc; margin-bottom: 25px; font-weight: 500; }
+        #combo-ui { position: absolute; top: 20px; left: 20px; font-size: 2.5rem; font-weight: 900; color: #FF0000; font-style: italic; display: none; text-shadow: 0 0 15px #FF0000; z-index: 101; }
+
+        .failure-active { animation: extremeShake 0.15s infinite alternate; }
+        @keyframes extremeShake { 0% { transform: translate(2px, 2px); filter: hue-rotate(0deg); } 100% { transform: translate(-2px, -2px); filter: hue-rotate(10deg); } }
+        .bg-vibrate { background-color: #1a0000 !important; }
+        .sub-text { font-size: 1.2rem; color: #ccc; margin-bottom: 25px; }
     </style>
 </head>
 <body id="bg-body">
+    <div id="combo-ui">COMBO x0</div>
     <div class="container" id="main-box">
         <h1>NOTORIOUS</h1>
         <div id="gym-quote">準備開練...</div>
         <div class="sub-text">伺服器組間休息，請稍候</div>
         
-        <div class="animation-scene">
+        <div class="animation-scene" id="character-scene">
             <div class="barbell"><div class="weight l"></div><div class="weight r"></div></div>
-            <div class="mc-part head">
-                <div class="head-features">
-                    <div class="mouth"></div>
-                    <div class="blush l"></div>
-                    <div class="blush r"></div>
-                </div>
-            </div>
+            <div class="mc-part head"><div class="head-features"><div class="mouth"></div><div class="blush l"></div><div class="blush r"></div></div></div>
             <div class="mc-part body"></div>
-            <div class="mc-part arm l"></div>
-            <div class="mc-part arm r"></div>
+            <div class="mc-part arm l"></div><div class="mc-part arm r"></div>
         </div>
 
         <div class="progress-box"><div id="bar-fill"></div></div>
@@ -228,33 +179,74 @@
 
     <script>
         let sec = 30;
+        let combo = 0;
+        let comboTimer;
         const bar = document.getElementById('bar-fill');
         const txt = document.getElementById('timer');
         const quote = document.getElementById('gym-quote');
         const box = document.getElementById('main-box');
         const body = document.getElementById('bg-body');
-        const scene = document.querySelector('.animation-scene');
+        const scene = document.getElementById('character-scene');
+        const comboUI = document.getElementById('combo-ui');
 
         const quotes = {
-            stage4: ["還有 4 組，撐住！", "這是我 0.1 倍的力量！", "你各位啊，不要偷懶！", "訓練，是為了解脫！"],
-            stage3: ["還有 3 組，動作不要跑掉！", "核心收緊，不要憋氣！", "看什麼看？再一組！", "這才剛開始而已！"],
-            stage2: ["還有 2 組，這組做完換你！", "漢子，這才是訓練！", "汗水是脂肪的眼淚！", "你如果不努力，誰也幫不了你！"],
-            stage1: ["最後 1 組！力竭！力竭！", "超越極限，不要放手！", "全台灣都在看你練！", "撐過去就是你的！"],
-            done: ["補位完成，準備進場！", "練完了，硬起來！", "現在，換你上場！"]
+            stage4: ["組間休息不是退縮！", "還有 4 組，撐住！", "這是我 0.1 倍的力量！"],
+            stage3: ["汗水是脂肪的眼淚！", "還有 3 組，核心收緊！", "看什麼看？再一組！"],
+            stage2: ["全台灣都在看你練！", "還有 2 組，超越自己！", "不要放下那根槓鈴！"],
+            stage1: ["這口氣給我吞下去！", "最後 1 組！力竭！", "死不放手，就是你的！"],
+            rage: ["你是怪物嗎！？", "這重量太輕了！！", "瘋了！瘋了！！"]
         };
 
-        function getRandomQuote(category) {
-            const list = quotes[category];
-            return list[Math.floor(Math.random() * list.length)];
-        }
+        body.addEventListener('mousedown', (e) => {
+            if (e.target.tagName === 'BUTTON') return;
+            combo++;
+            comboUI.style.display = 'block';
+            comboUI.innerText = `COMBO x${combo}`;
+            
+            const float = document.createElement('div');
+            float.className = 'float-text';
+            
+            let color = "#00FFCC";
+            if(combo > 10) color = "#CCFF00";
+            if(combo > 20) color = "#FFAA00";
+            if(combo > 30) color = "#FF0000";
+            float.style.color = color;
+            
+            // 隨機向左或向右偏移 (-150% 到 -80% 或 20% 到 100%)
+            // 這樣文字會從人物兩側飛出，不會擋住臉
+            const sideDir = Math.random() > 0.5 ? 1 : -1;
+            const spread = (Math.random() * 80 + 80) * sideDir; 
+            float.style.setProperty('--side-x', `calc(-50% + ${spread}px)`);
+            float.style.setProperty('--end-rot', (Math.random() * 30 - 15) + 'deg');
+            
+            float.innerText = combo > 20 ? `COMBO x${combo}!!` : `+${combo}kg`;
+            scene.appendChild(float);
+            setTimeout(() => float.remove(), 800);
+
+            if (combo > 15) {
+                scene.classList.add('rage-mode');
+                if(Math.random() > 0.7) quote.innerText = quotes.rage[Math.floor(Math.random()*quotes.rage.length)];
+            }
+
+            scene.style.transform = "scale(1.15)";
+            setTimeout(() => scene.style.transform = "scale(1)", 80);
+            if (navigator.vibrate) navigator.vibrate(30);
+
+            clearTimeout(comboTimer);
+            comboTimer = setTimeout(() => {
+                combo = 0;
+                comboUI.style.display = 'none';
+                scene.classList.remove('rage-mode');
+            }, 1500);
+        });
 
         function updateStage(s) {
             let info = { type: "", color: "", speed: "1.2s" };
             if (s > 22) { info.type = 'stage4'; info.color = "#00FFCC"; info.speed = "1.2s"; }
-            else if (s > 15) { info.type = 'stage3'; info.color = "#CCFF00"; info.speed = "0.9s"; }
-            else if (s > 8) { info.type = 'stage2'; info.color = "#FFBB00"; info.speed = "0.65s"; }
-            else if (s > 3) { info.type = 'stage1'; info.color = "#FF4400"; info.speed = "0.4s"; }
-            else { info.type = 'stage1'; info.color = "#FF0000"; info.speed = "0.2s"; }
+            else if (s > 15) { info.type = 'stage3'; info.color = "#CCFF00"; info.speed = "0.8s"; }
+            else if (s > 8) { info.type = 'stage2'; info.color = "#FFBB00"; info.speed = "0.5s"; }
+            else if (s > 3) { info.type = 'stage1'; info.color = "#FF4400"; info.speed = "0.3s"; }
+            else { info.type = 'stage1'; info.color = "#FF0000"; info.speed = "0.15s"; }
             return info;
         }
 
@@ -263,27 +255,24 @@
                 sec--;
                 txt.innerText = sec;
                 bar.style.width = ((30 - sec) / 30 * 100) + '%';
-                
                 const stage = updateStage(sec);
-                
-                // 文字漸入動畫
-                if (sec === 29 || sec === 22 || sec === 15 || sec === 8 || sec === 3) {
+                if (sec < 10) scene.classList.add('heavy');
+                if ([29, 22, 15, 8, 3].includes(sec) && combo < 15) {
                     quote.classList.remove('fade-in-up');
-                    void quote.offsetWidth; // 強制重繪
-                    quote.innerText = getRandomQuote(stage.type);
+                    void quote.offsetWidth;
+                    quote.innerText = quotes[stage.type][Math.floor(Math.random()*quotes[stage.type].length)];
                     quote.classList.add('fade-in-up');
                 }
-                
                 document.documentElement.style.setProperty('--current-color', stage.color);
                 scene.style.animationDuration = stage.speed;
-                
                 if (sec <= 5) {
                     box.classList.add('failure-active');
                     body.classList.add('bg-vibrate');
                 }
             } else {
                 clearInterval(countdown);
-                location.reload();
+                quote.innerText = "組間休息結束，即將進場！";
+                setTimeout(() => location.reload(), 1000);
             }
         }, 1000);
     </script>
